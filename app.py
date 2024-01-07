@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, jsonify
 
 db = SQLAlchemy()
 
@@ -38,7 +39,7 @@ def check_database_connection():
 
 check_database_connection()
 
-@app.route('/api/items', methods=['POST'])
+@app.route('/api/items/post', methods=['POST'])
 def create_item():
     data = request.get_json()
     cur = mysql.connection.cursor()
@@ -46,14 +47,14 @@ def create_item():
     mysql.connection.commit()
     return jsonify({'status': 'Item created'}), 201
 
-@app.route('/api/items', methods=['GET'])
+@app.route('/api/items/get', methods=['GET'])
 def get_items():
     cur = mysql.connection.cursor()
     cur.execute("SELECT * FROM items")
     items = cur.fetchall()
     return jsonify(items)
 
-@app.route('/api/items/<int:item_id>', methods=['PUT'])
+@app.route('/api/items/<int:item_id>/put', methods=['PUT'])
 def update_item(item_id):
     data = request.get_json()
     cur = mysql.connection.cursor()
@@ -61,7 +62,7 @@ def update_item(item_id):
     mysql.connection.commit()
     return jsonify({'status': 'Item updated'}), 200
 
-@app.route('/api/items/<int:item_id>', methods=['DELETE'])
+@app.route('/api/items/<int:item_id>/delete', methods=['DELETE'])
 def delete_item(item_id):
     cur = mysql.connection.cursor()
     cur.execute("DELETE FROM items WHERE id = %s", [item_id])
